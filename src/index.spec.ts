@@ -42,4 +42,13 @@ describe('index', () => {
             write: false,
         });
     });
+
+    it('apply templates customisation without issues', async () => {
+        await OpenAPI.generate({
+            input: './test/spec/v3.json',
+            output: './generated/v3/',
+            customTemplatesPath: './test/templates',
+            write: false,
+        });
+    });
 });

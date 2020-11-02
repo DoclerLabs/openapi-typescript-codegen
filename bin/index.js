@@ -13,6 +13,7 @@ program
     .requiredOption('-i, --input <value>', 'OpenAPI specification, can be a path, url or string content (required)')
     .requiredOption('-o, --output <value>', 'Output directory (required)')
     .option('-c, --client <value>', 'HTTP client to generate [fetch, xhr, node]', 'fetch')
+    .option('-t --templates <value>', 'Path to custom templates directory')
     .option('--useOptions', 'Use options instead of arguments')
     .option('--useUnionTypes', 'Use union types instead of enums')
     .option('--exportCore <value>', 'Write core files to disk', true)
@@ -34,6 +35,7 @@ if (OpenAPI) {
         exportServices: JSON.parse(program.exportServices) === true,
         exportModels: JSON.parse(program.exportModels) === true,
         exportSchemas: JSON.parse(program.exportSchemas) === true,
+        customTemplatesPath: program.templates,
     })
         .then(() => {
             process.exit(0);

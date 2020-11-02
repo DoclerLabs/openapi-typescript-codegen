@@ -1,5 +1,6 @@
 'use strict';
 
+const copy = require('rollup-plugin-copy');
 const commonjs = require('@rollup/plugin-commonjs');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const { terser } = require('rollup-plugin-terser');
@@ -23,7 +24,7 @@ const handlebarsPlugin = () => ({
         }
         return null;
     },
-    load: (file) => {
+    load: file => {
         if (path.extname(file) === '.hbs') {
             const template = fs.readFileSync(file, 'utf8').toString().trim();
             const templateSpec = handlebars.precompile(template, {
@@ -39,7 +40,7 @@ const handlebarsPlugin = () => ({
             return `export default ${templateSpec};`;
         }
         return null;
-    }
+    },
 });
 
 const getPlugins = () => {
@@ -48,12 +49,13 @@ const getPlugins = () => {
         typescript(),
         nodeResolve(),
         commonjs(),
-    ]
+        copy({ targets: [{ src: 'src/templates/', dest: 'dist' }] }),
+    ];
     if (process.env.NODE_ENV === 'development') {
         return plugins;
     }
     return [...plugins, terser()];
-}
+};
 
 module.exports = {
     input: './src/index.ts',
@@ -61,14 +63,6 @@ module.exports = {
         file: './dist/index.js',
         format: 'cjs',
     },
-    external: [
-        'fs',
-        'os',
-        'util',
-        'http',
-        'https',
-        'handlebars/runtime',
-        ...external,
-    ],
+    external: ['fs', 'os', 'util', 'http', 'https', 'handlebars/runtime', ...external],
     plugins: getPlugins(),
 };

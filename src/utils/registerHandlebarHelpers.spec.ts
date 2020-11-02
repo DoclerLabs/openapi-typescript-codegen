@@ -1,4 +1,4 @@
-import * as Handlebars from 'handlebars/runtime';
+import * as Handlebars from 'handlebars';
 
 import { registerHandlebarHelpers } from './registerHandlebarHelpers';
 

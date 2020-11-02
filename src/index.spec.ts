@@ -2,13 +2,15 @@ import * as fse from 'fs-extra';
 import * as path from 'path';
 import * as OpenAPI from './index';
 
+beforeAll(() => {
+    fse.symlinkSync(path.resolve(__dirname, 'templates'), path.resolve(__dirname, 'utils/templates'), 'dir');
+});
+
+afterAll(() => {
+    fse.unlinkSync(path.resolve(__dirname, 'utils/templates'));
+});
+
 describe('index', () => {
-    beforeAll(() =>
-        fse.symlinkSync(path.resolve(__dirname, 'templates'), path.resolve(__dirname, 'utils/templates'), 'dir')
-    );
-
-    afterAll(() => fse.unlinkSync(path.resolve(__dirname, 'utils/templates')));
-
     it('parses v2 without issues', async () => {
         await OpenAPI.generate({
             input: './test/spec/v2.json',

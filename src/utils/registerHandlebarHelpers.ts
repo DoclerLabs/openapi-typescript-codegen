@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import * as Handlebars from 'handlebars/runtime';
+import * as Handlebars from 'handlebars';
 
 export function registerHandlebarHelpers(): void {
     Handlebars.registerHelper('equals', function (a: string, b: string, options: Handlebars.HelperOptions): string {

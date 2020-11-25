@@ -24,6 +24,7 @@ export interface Options {
     exportModels?: boolean;
     exportSchemas?: boolean;
     write?: boolean;
+    customTemplatesPath?: string;
 }
 
 /**
@@ -40,6 +41,7 @@ export interface Options {
  * @param exportModels: Generate models
  * @param exportSchemas: Generate schemas
  * @param write Write the files to disk (true or false)
+ * @param customTemplatesPath: Provide custom templates to override default set
  */
 export async function generate({
     input,
@@ -52,17 +54,29 @@ export async function generate({
     exportModels = true,
     exportSchemas = false,
     write = true,
+    customTemplatesPath,
 }: Options): Promise<void> {
     const openApi = isString(input) ? await getOpenApiSpec(input) : input;
     const openApiVersion = getOpenApiVersion(openApi);
-    const templates = registerHandlebarTemplates();
+    const templates = registerHandlebarTemplates(customTemplatesPath);
 
     switch (openApiVersion) {
         case OpenApiVersion.V2: {
             const client = parseV2(openApi);
             const clientFinal = postProcessClient(client);
             if (!write) break;
-            await writeClient(clientFinal, templates, output, httpClient, useOptions, useUnionTypes, exportCore, exportServices, exportModels, exportSchemas);
+            await writeClient(
+                clientFinal,
+                templates,
+                output,
+                httpClient,
+                useOptions,
+                useUnionTypes,
+                exportCore,
+                exportServices,
+                exportModels,
+                exportSchemas
+            );
             break;
         }
 
@@ -70,7 +84,18 @@ export async function generate({
             const client = parseV3(openApi);
             const clientFinal = postProcessClient(client);
             if (!write) break;
-            await writeClient(clientFinal, templates, output, httpClient, useOptions, useUnionTypes, exportCore, exportServices, exportModels, exportSchemas);
+            await writeClient(
+                clientFinal,
+                templates,
+                output,
+                httpClient,
+                useOptions,
+                useUnionTypes,
+                exportCore,
+                exportServices,
+                exportModels,
+                exportSchemas
+            );
             break;
         }
     }
